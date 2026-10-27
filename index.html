@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercices E32 – Suivi de la commande du produit et/ou du service</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ── RESET & BASE ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #f5f7fb;
+  --surface:   #ffffff;
+  --card:      #ffffff;
+  --border:    #dde2ec;
+  --border-hi: #b9c1d3;
+  --text:      #1f2433;
+  --text-dim:  #5f677c;
+  --accent:    #b7791f;
+  --green:     #1f8a4c;
+  --red:       #c53030;
+  --blue:      #2b6cb0;
+  --purple:    #6b46c1;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --radius:    10px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── HEADER ──────────────────────────────────────────────── */
+.site-header {
+  background: linear-gradient(135deg, #e9eef8 0%, #ffffff 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 48px 24px 36px;
+  text-align: center;
+}
+.site-header .kicker {
+  display: inline-block;
+  background: var(--accent);
+  color: #ffffff;
+  font-family: var(--font-head);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 3px 12px;
+  border-radius: 3px;
+  margin-bottom: 18px;
+}
+.site-header h1 {
+  font-family: var(--font-head);
+  font-size: clamp(22px, 5vw, 38px);
+  font-weight: 800;
+  color: #1a2033;
+  margin-bottom: 8px;
+  line-height: 1.15;
+}
+.site-header .sub {
+  color: var(--text-dim);
+  font-size: 14px;
+  font-weight: 300;
+  max-width: 520px;
+  margin: 0 auto 24px;
+}
+
+/* ── NAV ANCRES ──────────────────────────────────────────── */
+.nav-anchors {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.nav-anchors a {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 16px;
+  text-decoration: none;
+  transition: border-color .15s, color .15s;
+}
+.nav-anchors a:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── CONTENEUR PRINCIPAL ─────────────────────────────────── */
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* ── TITRE DE BLOC ───────────────────────────────────────── */
+.bloc-titre {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 52px 0 6px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.bloc-titre:first-child { margin-top: 0; }
+.bloc-titre .icone {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+.bloc-titre h2 {
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 800;
+  color: #1a2033;
+}
+
+/* ── MÉMO FORMULE ────────────────────────────────────────── */
+.memo {
+  background: #eefaf1;
+  border: 1px solid #bfe5c9;
+  border-left: 4px solid var(--green);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 13.5px;
+  line-height: 1.75;
+}
+.memo .memo-titre {
+  font-family: var(--font-head);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+.memo code {
+  display: block;
+  background: #ffffff;
+  border-radius: 5px;
+  padding: 8px 14px;
+  color: #1b6b3a;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  margin: 4px 0;
+}
+.memo .note {
+  color: var(--text-dim);
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+
+/* ── CARTE EXERCICE ──────────────────────────────────────── */
+.exo-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.exo-card:hover { border-color: var(--border-hi); }
+
+.exo-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+.exo-header::-webkit-details-marker { display: none; }
+
+.exo-num {
+  font-family: var(--font-head);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  min-width: 40px;
+}
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.badge-1 { background: #e7f6ec; color: var(--green); border: 1px solid #bfe5c9; }
+.badge-2 { background: #fdf4e3; color: var(--accent); border: 1px solid #f0d9a8; }
+.badge-3 { background: #fdecec; color: var(--red); border: 1px solid #f3c2c2; }
+.badge-exam { background: #f2ecfb; color: var(--purple); border: 1px solid #d9c9f2; }
+
+.exo-titre-txt {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+}
+.chevron {
+  color: var(--text-dim);
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: transform .2s;
+}
+details[open] .chevron { transform: rotate(180deg); }
+
+/* ── CORPS DE L'EXERCICE ─────────────────────────────────── */
+.exo-body {
+  padding: 0 18px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.contexte {
+  background: #eef3fb;
+  border-left: 3px solid var(--blue);
+  border-radius: 0 6px 6px 0;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.contexte strong { color: #1a2033; }
+
+.tableau-donnees {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.tableau-donnees th {
+  background: #f1f3f8;
+  color: var(--text-dim);
+  font-family: var(--font-head);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.tableau-donnees td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.tableau-donnees tr:last-child td { border-bottom: none; }
+.tableau-donnees td.num { font-weight: 600; color: #1a2033; }
+.tableau-donnees tr.total-row td {
+  background: #f1f3f8;
+  font-family: var(--font-head);
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.questions { margin: 18px 0 0; }
+.question {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+.question .q-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background: var(--accent);
+  color: #ffffff;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 11px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.question p { font-size: 14px; margin: 0; }
+
+/* ── ORDRE DE GRANDEUR ───────────────────────────────────── */
+.ordre-grandeur {
+  background: #fff8e6;
+  border: 1px solid #f0d9a8;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  color: #7a5a00;
+  margin: 12px 0 0;
+}
+.ordre-grandeur::before { content: "💡 "; }
+
+/* ── BOUTON CORRECTION ───────────────────────────────────── */
+.btn-corrige {
+  background: none;
+  border: 1px solid var(--border-hi);
+  border-radius: 6px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  margin-top: 18px;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-corrige:hover { border-color: var(--green); color: var(--green); }
+
+/* ── CORRECTION ──────────────────────────────────────────── */
+.correction {
+  display: none;
+  background: #eefaf1;
+  border: 1px solid #bfe5c9;
+  border-radius: 6px;
+  padding: 16px 18px;
+  margin-top: 14px;
+  font-size: 13.5px;
+  line-height: 1.8;
+}
+.correction.visible { display: block; }
+.correction .corr-etape {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #cfe9d6;
+}
+.correction .corr-etape:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.correction .c-num {
+  display: inline-block;
+  background: var(--green);
+  color: #ffffff;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 18px;
+  margin-right: 6px;
+}
+.correction code {
+  display: block;
+  background: #ffffff;
+  border-radius: 4px;
+  padding: 6px 12px;
+  color: #1b6b3a;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  margin: 5px 0;
+  white-space: pre-wrap;
+}
+.correction .res {
+  font-family: var(--font-head);
+  font-weight: 700;
+  color: #1a2033;
+}
+.correction .conclu {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #2f5d3d;
+  font-style: italic;
+}
+.correction .tableau-corr {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 8px 0;
+}
+.correction .tableau-corr th {
+  background: #dff3e5;
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  text-align: left;
+}
+.correction .tableau-corr td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #cfe9d6;
+  color: #2a3b30;
+}
+.correction .tableau-corr td.val {
+  font-weight: 700;
+  color: var(--green);
+}
+.correction .tableau-corr tr.t-total td {
+  background: #dff3e5;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ── SÉPARATEUR ──────────────────────────────────────────── */
+hr.section-sep {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 54px 0 0;
+}
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .exo-titre-txt { font-size: 13px; }
+  .contexte { font-size: 13px; }
+  .tableau-donnees { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="kicker">📦 Exercices E32 – Bac Pro MCV</div>
+  <h1>Assurer le suivi de la commande<br>du produit et/ou du service</h1>
+  <p class="sub">17 exercices progressifs – du document commercial au cas de synthèse (bloc 2 « Suivre les ventes »)</p>
+  <nav class="nav-anchors">
+    <a href="#commande">🧾 Évolution de la commande (5 ex.)</a>
+    <a href="#reglement">💳 Règlement client (4 ex.)</a>
+    <a href="#informer">📣 Informer le client (6 ex.)</a>
+    <a href="#synthese">🏁 Cas de synthèse (2 ex.)</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 1 – SUIVRE L'ÉVOLUTION DE LA COMMANDE
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="commande">
+  <span class="icone">🧾</span>
+  <h2>Bloc 1 – Suivre l'évolution de la commande</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo</div>
+  <code>Commande du client → bon de commande → bon de livraison → facture</code>
+  <code>Valeur d'une ligne = prix unitaire × quantité</code>
+  <code>Total commande = somme des valeurs de toutes les lignes</code>
+  <p class="note"><strong>Bon de commande</strong> : confirme la commande. <strong>Bon de livraison</strong> : accompagne la marchandise, permet le contrôle quantitatif et qualitatif. <strong>Facture</strong> : indique le prix à payer, document comptable obligatoire entre l'acheteur et le vendeur. Le suivi est le plus souvent assuré par un <strong>logiciel de gestion commerciale</strong>.</p>
+</div>
+
+<!-- EX 1 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 1</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Les documents du suivi de commande</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Vous êtes stagiaire chez <strong>Baby Web</strong> (SAS, Calais), qui vend du mobilier pour chambres d'enfant à des particuliers et à des boutiques spécialisées. Votre tutrice vous décrit trois moments du traitement d'une commande :<br><br>
+      <strong>A.</strong> le client vient de commander un lit sur le site. Baby Web lui transmet un document qui reprend les articles, les quantités et les prix pour confirmer sa demande.<br>
+      <strong>B.</strong> le transporteur remet le colis au client. Un document accompagne la marchandise ; le client le signe après avoir vérifié le nombre de colis et leur état.<br>
+      <strong>C.</strong> une fois la livraison effectuée, Baby Web adresse au client le document qui indique le prix définitif et qui sera enregistré en comptabilité.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Nommez le document utilisé dans chacune des situations A, B et C.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Remettez ces trois documents dans l'ordre chronologique du suivi de la commande.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Vrai ou faux : « <em>la facture atteste que le client a payé</em> ». Justifiez.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Précisez qui est le « client » et qui est le « fournisseur » dans une commande.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> un document confirme, un document accompagne la marchandise, un document réclame le paiement.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>A = bon de commande   B = bon de livraison   C = facture</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Bon de commande → bon de livraison → facture.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">Faux.</p>
+        <p class="conclu">La facture indique le montant à payer et sert de pièce comptable. Elle ne prouve pas que le paiement a été effectué : le règlement doit être suivi à part.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p>Le <strong>client</strong> est la personne (particulier ou entreprise) qui passe la commande. Le <strong>fournisseur</strong> est l'entreprise à qui il commande, ici Baby Web.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 2 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 2</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Compléter le détail d'une commande</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Une cliente a passé sur le site Baby Web la commande n° <strong>7894</strong>. Le logiciel de gestion commerciale affiche le détail suivant, que vous devez compléter.
+      <table class="tableau-donnees">
+        <tr><th>Désignation</th><th>Réf.</th><th>Prix unitaire €</th><th>Quantité</th><th>Valeur totale €</th></tr>
+        <tr><td>Lit Cévennes</td><td>45120</td><td class="num">289,00</td><td>1</td><td>?</td></tr>
+        <tr><td>Commode Loire</td><td>33017</td><td class="num">149,90</td><td>1</td><td>?</td></tr>
+        <tr><td>Étagère murale Jura</td><td>12455</td><td class="num">18,50</td><td>4</td><td>?</td></tr>
+        <tr class="total-row"><td colspan="4">Total commande</td><td>?</td></tr>
+      </table>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Calculez la valeur totale de chaque ligne.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Calculez le total de la commande.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Indiquez le nombre de références et le nombre d'articles commandés.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 290 + 150 + 4 × 20 ≈ 520 €. Un total supérieur à 600 € signale une erreur.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <table class="tableau-corr">
+          <tr><th>Désignation</th><th>Calcul</th><th>Valeur €</th></tr>
+          <tr><td>Lit Cévennes</td><td>289,00 × 1</td><td class="val">289,00</td></tr>
+          <tr><td>Commode Loire</td><td>149,90 × 1</td><td class="val">149,90</td></tr>
+          <tr><td>Étagère murale Jura</td><td>18,50 × 4</td><td class="val">74,00</td></tr>
+          <tr class="t-total"><td colspan="2">Total commande</td><td>512,90</td></tr>
+        </table>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>289,00 + 149,90 + 74,00 = 512,90 €</code>
+        <p class="res">Total commande = 512,90 €</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">3 références et 6 articles (1 + 1 + 4).</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 3 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 3</span>
+    <span class="badge badge-2">⬆⬆ intermédiaire</span>
+    <span class="exo-titre-txt">Lire un tableau de suivi des commandes</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Extrait du tableau de suivi des commandes de Baby Web au 14/12.<br>
+      <em>F = France ; UE = autre pays de l'Union européenne ; LD = livraison à domicile ; PR = point relais.</em>
+      <table class="tableau-donnees">
+        <tr><th>N° cde</th><th>Date</th><th>Statut</th><th>Valeur €</th><th>Source</th><th>Nbre prod.</th><th>Livraison</th><th>Début livr.</th><th>Mode</th></tr>
+        <tr><td>7890</td><td>12/12</td><td>Acceptée</td><td class="num">453,00</td><td>Tél.</td><td>2</td><td>F</td><td>15/12</td><td>LD</td></tr>
+        <tr><td>7891</td><td>13/12</td><td>En cours</td><td class="num">876,87</td><td>Web</td><td>3</td><td>UE</td><td>18/12</td><td>PR</td></tr>
+        <tr><td>7892</td><td>14/12</td><td>En cours</td><td class="num">357,70</td><td>Web</td><td>2</td><td>F</td><td>17/12</td><td>PR</td></tr>
+        <tr><td>7893</td><td>14/12</td><td>En cours</td><td class="num">259,70</td><td>Web</td><td>3</td><td>UE</td><td>19/12</td><td>LD</td></tr>
+      </table>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Combien de commandes sont « en cours » ? Calculez leur valeur totale.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Quelle commande a été passée par téléphone ? Quelles commandes seront livrées en point relais ?</p></div>
+      <div class="question"><span class="q-num">3</span><p>Calculez, pour chaque commande, le nombre de jours entre la date de commande et le début de livraison.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Que constatez-vous pour les commandes livrées dans l'Union européenne ? Quelle information devez-vous donner à ces clients ?</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> trois commandes en cours entre 250 et 900 €, soit un total proche de 1 500 €. Les délais sont de quelques jours seulement.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>876,87 + 357,70 + 259,70 = 1 494,27 €</code>
+        <p class="res">3 commandes en cours (7891, 7892, 7893) pour 1 494,27 €.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Par téléphone : 7890. En point relais : 7891 et 7892.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <table class="tableau-corr">
+          <tr><th>N° cde</th><th>Calcul</th><th>Délai</th></tr>
+          <tr><td>7890</td><td>15/12 − 12/12</td><td class="val">3 jours</td></tr>
+          <tr><td>7891</td><td>18/12 − 13/12</td><td class="val">5 jours</td></tr>
+          <tr><td>7892</td><td>17/12 − 14/12</td><td class="val">3 jours</td></tr>
+          <tr><td>7893</td><td>19/12 − 14/12</td><td class="val">5 jours</td></tr>
+        </table>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p>Les commandes livrées dans l'UE (7891 et 7893) ont un délai plus long (5 jours contre 3 en France).</p>
+        <p class="conclu">Il faut informer ces clients du délai prévu et des modalités de mise à disposition (date de début de livraison, point relais ou domicile) pour qu'ils ne soient pas surpris.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 4 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 4</span>
+    <span class="badge badge-2">⬆⬆ intermédiaire</span>
+    <span class="exo-titre-txt">Contrôler une commande avant de la valider</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Avant de valider la commande n° <strong>7895</strong> saisie par un collègue, vous devez la contrôler.<br><br>
+      Date : 15/12 – Cliente : Mme Léa Garnier, 12 rue des Lilas, 59000 Lille – Téléphone : <em>non renseigné</em><br>
+      Lieu de livraison : <em>non renseigné</em> – Mode de paiement : carte bancaire
+      <table class="tableau-donnees">
+        <tr><th>Désignation</th><th>Réf.</th><th>Prix unitaire €</th><th>Qté</th><th>Valeur €</th></tr>
+        <tr><td>Chaise Aude</td><td>98676</td><td class="num">23,45</td><td>2</td><td>46,90</td></tr>
+        <tr><td>Cadre mural Vendée</td><td>12098</td><td class="num">12,25</td><td>4</td><td>45,00</td></tr>
+        <tr><td>Bureau Alpes</td><td>–</td><td class="num">199,50</td><td>1</td><td>199,50</td></tr>
+        <tr class="total-row"><td colspan="4">Total commande</td><td>291,40</td></tr>
+      </table>
+      <em>Catalogue : Bureau Alpes, réf. 67123.</em>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Rappelez les éléments à vérifier lors de la passation d'une commande.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Relevez toutes les anomalies de cette commande.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Recalculez le total exact de la commande.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Expliquez les conséquences possibles si la commande est validée en l'état.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 4 cadres à environ 12 € font environ 50 €, pas 45 €. Vérifiez chaque ligne avant le total.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <p>Coordonnées du client (nom, adresse, téléphone), référence de la commande, références des produits, date de la commande et date de livraison prévue, lieu de livraison (domicile, point relais), mode de paiement.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p>• téléphone de la cliente absent ;<br>• lieu de livraison absent ;<br>• référence du bureau Alpes absente (67123) ;<br>• erreur de calcul sur la ligne cadre mural ;<br>• total commande faux.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>Cadre mural : 12,25 × 4 = 49,00 €
+Total : 46,90 + 49,00 + 199,50 = 295,40 €</code>
+        <p class="res">Total exact = 295,40 € (et non 291,40 €).</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="conclu">Livraison impossible ou mal adressée, impossibilité de prévenir la cliente par SMS ou téléphone, risque d'envoi d'un mauvais bureau, perte de 4 € pour l'entreprise et facture erronée. Ces erreurs dégradent la satisfaction et l'image de Baby Web.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 5 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 5</span>
+    <span class="badge badge-3">⬆⬆⬆ niveau examen</span>
+    <span class="exo-titre-txt">Suivi de commande en ligne et stratégie omnicanale</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Baby Web vend en magasin, par téléphone, sur son site et sur sa page Facebook. Elle met en place un espace « <em>suivre ma commande</em> » accessible depuis le site et une application mobile. Le client peut y :<br><br>
+      • suivre chaque étape de sa commande (acceptée, préparée, expédiée, livrée) ;<br>
+      • voir les options choisies et le contenu de son colis ;<br>
+      • connaître le détail du rendez-vous de livraison ;<br>
+      • savoir quelles pièces justificatives envoyer (ex. pour un paiement en plusieurs fois).<br><br>
+      Avant cette mise en place, le service client recevait en moyenne <strong>35 appels par jour</strong> de clients demandant « <em>où en est ma commande ?</em> ».
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Indiquez les avantages de ce dispositif pour le client.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Indiquez les avantages de ce dispositif pour l'entreprise.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Rappelez le sens de l'expression « stratégie omnicanale ».</p></div>
+      <div class="question"><span class="q-num">4</span><p>Décrivez un parcours client omnicanal possible chez Baby Web, de la recherche du produit à sa réception.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> pensez au temps gagné par le client, mais aussi au temps libéré pour les conseillers qui recevaient 35 appels par jour.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <p class="res">Pour le client :</p>
+        <p>gain de temps (pas d'attente au téléphone), service disponible à toute heure, autonomie, information rapide et précise, rassurance sur l'avancement de sa commande.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Pour l'entreprise :</p>
+        <p>baisse des appels répétitifs et chronophages à faible valeur ajoutée, personnel libéré pour le conseil et la vente, image moderne et de qualité de service, satisfaction et fidélisation des clients, moins d'erreurs grâce aux informations issues du logiciel de gestion commerciale.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p>Pendant son parcours d'achat, le client utilise successivement ou simultanément plusieurs canaux de contact ou de vente. L'entreprise relie tous ces canaux, qui deviennent interdépendants (mêmes informations, même suivi).</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p>Exemple : le client découvre un lit sur la page Facebook, le compare sur le site, vient le voir en magasin, le commande sur le site, suit la commande sur l'application et le retire en point relais après avoir reçu un SMS.</p>
+        <p class="conclu">Quel que soit le canal utilisé, le client doit retrouver les mêmes informations sur sa commande.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 2 – SUIVRE L'ÉVOLUTION DU RÈGLEMENT CLIENT
+══════════════════════════════════════════════════════════ -->
+<hr class="section-sep">
+<div class="bloc-titre" id="reglement">
+  <span class="icone">💳</span>
+  <h2>Bloc 2 – Suivre l'évolution du règlement client</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo</div>
+  <code>Paiement comptant = le client paie au moment de l'achat</code>
+  <code>Paiement à crédit = le client paie plus tard, en une ou plusieurs fois</code>
+  <code>Montant d'une échéance = montant de la commande ÷ nombre d'échéances</code>
+  <p class="note">Modes de règlement : <strong>espèces</strong>, <strong>chèque</strong> (l'émetteur donne l'ordre à sa banque de payer le bénéficiaire), <strong>carte bancaire</strong> (dont le sans contact, jusqu'à 50 € par paiement), <strong>virement</strong> (transfert d'un compte vers un autre), <strong>prélèvement</strong> (autorisation donnée par le client, utilisée pour un crédit ou un abonnement). Si la division ne tombe pas juste, on arrondit au centime et on ajuste une échéance pour retrouver le total exact.</p>
+</div>
+
+<!-- EX 6 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 6</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Comptant ou crédit ? Identifier le mode de règlement</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Voici cinq règlements reçus par Baby Web :<br><br>
+      <strong>A.</strong> Mme Durand paie son lit (289 €) avec sa carte bancaire au moment de la commande sur le site.<br>
+      <strong>B.</strong> la crèche Le Colibri règle sa commande de 1 212 € en trois fois, par prélèvements les 01/01, 01/02 et 01/03.<br>
+      <strong>C.</strong> M. Ali paie un cadre mural (12,25 €) en billets et pièces au magasin.<br>
+      <strong>D.</strong> la boutique Petit Nid paie sa facture 30 jours après la livraison en transférant la somme de son compte bancaire vers celui de Baby Web.<br>
+      <strong>E.</strong> M. Roux remet au magasin un chèque de 120 € à l'ordre de Baby Web.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Pour chaque situation, indiquez s'il s'agit d'un paiement comptant ou à crédit.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Pour chaque situation, nommez le mode de règlement utilisé.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Dans la situation E, identifiez l'émetteur, le bénéficiaire et l'intermédiaire du chèque.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> posez-vous une seule question pour le comptant ou le crédit : le client paie-t-il au moment de l'achat ?</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span><span class="c-num">2</span>
+        <table class="tableau-corr">
+          <tr><th>Situation</th><th>Comptant / crédit</th><th>Mode de règlement</th></tr>
+          <tr><td>A</td><td class="val">Comptant</td><td>Carte bancaire</td></tr>
+          <tr><td>B</td><td class="val">Crédit (3 fois)</td><td>Prélèvement</td></tr>
+          <tr><td>C</td><td class="val">Comptant</td><td>Espèces</td></tr>
+          <tr><td>D</td><td class="val">Crédit (paiement différé)</td><td>Virement</td></tr>
+          <tr><td>E</td><td class="val">Comptant</td><td>Chèque</td></tr>
+        </table>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">Émetteur : M. Roux. Bénéficiaire : Baby Web. Intermédiaire : la banque de M. Roux.</p>
+        <p class="conclu">Le destinataire du chèque n'est pas le banquier : la banque reçoit seulement l'ordre de payer.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 7 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 7</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Répondre par écrit à des questions sur le paiement</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Conditions de paiement de Baby Web pour les <strong>particuliers</strong> : paiement uniquement au comptant, par carte bancaire (CB, Visa, Mastercard). La carte American Express et les chèques ne sont pas acceptés. Le paiement en 3 fois sans frais est réservé aux <strong>clients professionnels</strong>.<br><br>
+      Deux particuliers écrivent via le formulaire de contact du site :<br>
+      • <strong>Carole Seguy</strong> : « <em>Bonjour, est-il possible de payer ma commande en plusieurs fois ?</em> »<br>
+      • <strong>Dylan Monclerc</strong> : « <em>Bonjour, je souhaite régler par chèque ou avec ma carte American Express, est-ce possible ?</em> »
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Rédigez la réponse écrite à Carole Seguy.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Rédigez la réponse écrite à Dylan Monclerc.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Citez deux règles à respecter pour qu'une réponse écrite à un client soit professionnelle.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> une réponse courte suffit : formule d'appel, réponse précise, solution acceptée, formule de politesse, signature.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <p>« <em>Bonjour Madame, pour les particuliers, le paiement s'effectue uniquement au comptant, par carte bancaire (CB, Visa ou Mastercard). Nous restons à votre disposition pour toute question. Cordialement, [prénom], Baby Web</em> »</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p>« <em>Bonjour Monsieur, nous acceptons uniquement les cartes bancaires CB, Visa et Mastercard. Le paiement par chèque et par carte American Express n'est pas possible. Nous restons à votre disposition. Cordialement, [prénom], Baby Web</em> »</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="conclu">Exemples : utiliser un langage soutenu et sans faute, répondre précisément à la question posée, proposer la solution possible, saluer et signer.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 8 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 8</span>
+    <span class="badge badge-2">⬆⬆ intermédiaire</span>
+    <span class="exo-titre-txt">Établir un échéancier en 3 fois sans frais</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      La <strong>crèche Le Colibri</strong> (client professionnel CCL0008, 37 rue Faure, 17200 Royan) a passé commande le <strong>14/12</strong> pour un montant de <strong>1 212 €</strong>. Elle choisit le règlement en <strong>3 fois sans frais</strong> par prélèvement. Les prélèvements ont lieu le 1<sup>er</sup> de chaque mois, à partir du mois qui suit la commande.<br><br>
+      Le même jour, la boutique <strong>Petit Nid</strong> passe une commande de <strong>1 000 €</strong> dans les mêmes conditions.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Calculez le montant de chaque échéance de la crèche Le Colibri et indiquez les dates de prélèvement.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Établissez l'échéancier de la boutique Petit Nid (attention aux arrondis).</p></div>
+      <div class="question"><span class="q-num">3</span><p>Quelles informations bancaires Baby Web doit-elle obtenir du client pour mettre en place les prélèvements ?</p></div>
+      <div class="question"><span class="q-num">4</span><p>S'agit-il d'un paiement comptant ou à crédit ? Que signifie « sans frais » ?</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 1 200 ÷ 3 = 400 €. Chaque échéance du Colibri sera donc légèrement supérieure à 400 €. Pour Petit Nid, environ 333 € par échéance.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>1 212 ÷ 3 = 404 €</code>
+        <table class="tableau-corr">
+          <tr><th>Échéance</th><th>Date</th><th>Montant</th></tr>
+          <tr><td>1</td><td>01/01</td><td class="val">404,00 €</td></tr>
+          <tr><td>2</td><td>01/02</td><td class="val">404,00 €</td></tr>
+          <tr><td>3</td><td>01/03</td><td class="val">404,00 €</td></tr>
+          <tr class="t-total"><td colspan="2">Total</td><td>1 212,00 €</td></tr>
+        </table>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>1 000 ÷ 3 = 333,333… → 333,33 € × 3 = 999,99 € (il manque 0,01 €)</code>
+        <p class="res">01/01 : 333,34 € – 01/02 : 333,33 € – 01/03 : 333,33 € (total 1 000,00 €).</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p>Les coordonnées bancaires du client (IBAN et BIC) et son autorisation de prélèvement signée.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="res">Paiement à crédit.</p>
+        <p class="conclu">Le client paie en plusieurs fois, dans un temps différé. « Sans frais » signifie qu'il ne paie pas plus cher qu'au comptant : le total des échéances est égal au montant de la commande.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 9 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 9</span>
+    <span class="badge badge-3">⬆⬆⬆ niveau examen</span>
+    <span class="exo-titre-txt">Le paiement sans contact en magasin</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Le magasin Baby Web de Calais vient d'installer de nouveaux terminaux de paiement. Votre responsable vous demande de préparer une fiche d'information pour l'équipe sur le <strong>paiement sans contact par carte bancaire</strong>, limité à <strong>50 € par paiement</strong>.<br><br>
+      Achats en caisse à traiter ce matin : <strong>12,90 €</strong> – <strong>49,99 €</strong> – <strong>50,00 €</strong> – <strong>52,40 €</strong> – <strong>135,00 €</strong>.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Indiquez pour chaque achat si le client peut payer sans contact avec sa carte. Sinon, que doit-il faire ?</p></div>
+      <div class="question"><span class="q-num">2</span><p>Présentez trois avantages du paiement sans contact pour le client et deux pour le commerçant.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Présentez trois inconvénients ou précautions liés à ce mode de paiement.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> la limite de 50 € est incluse. Au-delà, le paiement par carte reste possible, mais avec le code.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <table class="tableau-corr">
+          <tr><th>Montant</th><th>Sans contact ?</th></tr>
+          <tr><td>12,90 €</td><td class="val">Oui</td></tr>
+          <tr><td>49,99 €</td><td class="val">Oui</td></tr>
+          <tr><td>50,00 €</td><td class="val">Oui (limite incluse)</td></tr>
+          <tr><td>52,40 €</td><td class="val">Non</td></tr>
+          <tr><td>135,00 €</td><td class="val">Non</td></tr>
+        </table>
+        <p class="conclu">Au-delà de 50 €, le client insère sa carte et saisit son code, ou choisit un autre mode de règlement.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p><strong>Client :</strong> évite de retirer de l'argent pour de petits montants, pas besoin de monnaie, simple et rapide à utiliser.<br><strong>Commerçant :</strong> gain de temps en caisse, moins d'espèces à manipuler et à stocker.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="conclu">Faire attention à son environnement (vol de carte), vérifier le montant affiché avant de valider, surveiller régulièrement ses comptes, impossible au-delà de 50 €.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 3 – INFORMER LE CLIENT
+══════════════════════════════════════════════════════════ -->
+<hr class="section-sep">
+<div class="bloc-titre" id="informer">
+  <span class="icone">📣</span>
+  <h2>Bloc 3 – Informer le client des délais et de la mise à disposition</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo</div>
+  <code>Jours ouvrés = du lundi au vendredi, hors jours fériés</code>
+  <code>Frais restant à la charge de l'entreprise = coût réel de l'envoi − frais facturés au client</code>
+  <code>Retard : vérifier la date prévue → mise en demeure par lettre recommandée → résolution du contrat</code>
+  <p class="note">Tout message au client (mail, SMS, messagerie, tchat) indique le <strong>numéro de commande</strong>, l'information utile (délai, lieu, horaires) et reste <strong>court, poli et professionnel</strong>. Sans date de livraison convenue, le vendeur doit livrer au plus tard <strong>30 jours</strong> après la commande.</p>
+</div>
+
+<!-- EX 10 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 10</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Calculer une date de livraison en jours ouvrés</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Le site d'une boutique en ligne annonce : « <em>livraison en 3 jours ouvrés</em> ». Règle de l'entreprise : <strong>le jour de la commande compte comme 1<sup>er</sup> jour</strong> si la commande est passée avant 12 h. Aucun jour férié sur la période.<br><br>
+      Calendrier : mercredi 5 février, jeudi 6, vendredi 7, samedi 8, dimanche 9, lundi 10, mardi 11, mercredi 12, jeudi 13, vendredi 14, samedi 15, dimanche 16, lundi 17 février.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Une commande est passée le mercredi 5 février à 9 h. Quelle date de livraison annoncez-vous ?</p></div>
+      <div class="question"><span class="q-num">2</span><p>Même question pour une commande passée le vendredi 7 février à 10 h.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Même question pour une commande passée le jeudi 13 février à 11 h.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Une option « livraison en 5 jours ouvrés » existe. Le client commande le lundi 10 février à 8 h. Quelle date annoncez-vous ?</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> le samedi et le dimanche ne comptent pas. Une commande du vendredi est donc livrée en début de semaine suivante.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>mer. 5 (1) – jeu. 6 (2) – ven. 7 (3)</code>
+        <p class="res">Livraison le vendredi 7 février.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>ven. 7 (1) – lun. 10 (2) – mar. 11 (3)</code>
+        <p class="res">Livraison le mardi 11 février.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>jeu. 13 (1) – ven. 14 (2) – lun. 17 (3)</code>
+        <p class="res">Livraison le lundi 17 février.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <code>lun. 10 (1) – mar. 11 (2) – mer. 12 (3) – jeu. 13 (4) – ven. 14 (5)</code>
+        <p class="res">Livraison le vendredi 14 février.</p>
+        <p class="conclu">Annoncer une date précise rassure le client et évite les appels de relance.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 11 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 11</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Les frais de livraison couvrent-ils le coût de l'envoi ?</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Une cliente commande un petit article pesant <strong>49,5 g</strong>, emballé dans un carton de <strong>15 g</strong>. Les frais de livraison facturés à la cliente sont de <strong>5,52 €</strong>.<br>
+      Grille du transporteur (livraison à domicile sans signature) :
+      <table class="tableau-donnees">
+        <tr><th>Poids du colis</th><th>Tarif</th></tr>
+        <tr><td>Jusqu'à 250 g</td><td class="num">7,87 €</td></tr>
+        <tr><td>De 251 g à 500 g</td><td class="num">8,95 €</td></tr>
+        <tr><td>De 501 g à 1 kg</td><td class="num">10,40 €</td></tr>
+      </table>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Calculez le poids total du colis et déterminez le coût de l'envoi.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Les frais facturés couvrent-ils le coût de l'envoi ? Calculez la somme restant à la charge de l'entreprise.</p></div>
+      <div class="question"><span class="q-num">3</span><p>L'entreprise réalise 40 envois de ce type par mois. Calculez la perte mensuelle.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Proposez une solution pour réduire cette perte.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> le colis pèse moins de 100 g. Écart d'environ 2 € par envoi, soit moins de 100 € par mois.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>49,5 + 15 = 64,5 g → tranche « jusqu'à 250 g »</code>
+        <p class="res">Coût de l'envoi = 7,87 €</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>7,87 − 5,52 = 2,35 €</code>
+        <p class="res">Non : 2,35 € restent à la charge de l'entreprise par envoi.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>2,35 × 40 = 94,00 €</code>
+        <p class="res">Perte mensuelle = 94,00 €</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="conclu">Exemples : ajuster les frais de livraison facturés au coût réel, négocier les tarifs avec le transporteur, proposer le retrait en point relais ou en magasin, fixer un montant minimum d'achat pour la livraison gratuite afin d'augmenter le panier moyen.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 12 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 12</span>
+    <span class="badge badge-2">⬆⬆ intermédiaire</span>
+    <span class="exo-titre-txt">Annoncer un retard de livraison par mail</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Le fournisseur scandinave de Baby Web prévient que les intempéries bloquent les transports : les produits de la commande n° <strong>45768</strong> de <strong>Mme Sybille Fournié</strong> (sybillefournie@laposte.net) arriveront en retard. La nouvelle date n'est pas encore connue.<br>
+      Adresse d'envoi de Baby Web : contact@babyweb.com.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Rédigez le mail complet (expéditeur, destinataire, objet, message) informant la cliente du retard.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Pourquoi est-il préférable de prévenir la cliente avant qu'elle ne se manifeste ?</p></div>
+      <div class="question"><span class="q-num">3</span><p>Un autre client, M. Thierry Boutin, est concerné par le même retard et vous demande en plus de changer l'adresse de livraison. Établissez par écrit le plan de l'appel téléphonique que vous lui passerez (contact, raison de l'appel, objectif, conclusion).</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> un mail de retard comporte une information (retard + cause), un engagement (on vous préviendra) et des excuses.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>De : contact@babyweb.com
+À : sybillefournie@laposte.net
+Objet : suivi de votre commande 45768
+
+Bonjour Madame,
+Nous vous informons que votre commande n° 45768 aura un retard de livraison en raison des intempéries qui touchent la Scandinavie, d'où proviennent vos articles. Nous vous préviendrons dès réception du produit pour vous communiquer la nouvelle date de livraison.
+Nous vous prions de bien vouloir nous excuser pour ce désagrément.
+Cordialement,
+[prénom nom], Baby Web</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="conclu">Prévenir montre le sérieux de l'entreprise, préserve la confiance, évite une réclamation ou un avis négatif et limite les appels au service client.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <table class="tableau-corr">
+          <tr><th>Étape</th><th>Contenu</th></tr>
+          <tr><td>Contact</td><td>Se présenter, présenter l'entreprise, vérifier l'identité de l'interlocuteur.</td></tr>
+          <tr><td>Raison de l'appel</td><td>Annoncer le retard de livraison et s'excuser.</td></tr>
+          <tr><td>Objectif</td><td>Rassurer le client et satisfaire sa demande : noter la nouvelle adresse de livraison et la reformuler.</td></tr>
+          <tr><td>Conclusion</td><td>Remercier le client de sa confiance, saluer, raccrocher après le client.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 13 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 13</span>
+    <span class="badge badge-2">⬆⬆ intermédiaire</span>
+    <span class="exo-titre-txt">Informer de la mise à disposition par SMS et messagerie</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      <strong>Situation 1</strong> : la commande n° <strong>6858</strong> de Mme <strong>Moira</strong> est arrivée au point relais n° 45 – Tabac Les Colombes, à Ancy. Elle peut être retirée pendant 10 jours, sur présentation d'une pièce d'identité.<br><br>
+      <strong>Situation 2</strong> : un client écrit sur la messagerie Facebook de Baby Web : « <em>Bonjour, je n'ai toujours pas reçu mon colis, que se passe-t-il ?</em> ». Le suivi indique que le colis a été présenté en son absence et déposé au bureau de poste, 141 cours Berthelot.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Rédigez le SMS envoyé à Mme Moira (160 caractères maximum).</p></div>
+      <div class="question"><span class="q-num">2</span><p>Rédigez la réponse au client sur la messagerie Facebook.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Expliquez pourquoi le SMS est un canal adapté pour annoncer la mise à disposition d'une commande.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> un SMS commercial tient en deux phrases : quoi (commande n°), où (lieu), comment (conditions de retrait) et la signature.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Bonjour, votre commande 6858 est arrivée au point relais 45 – Tabac Les Colombes, Ancy. Retrait sous 10 jours avec pièce d'identité. Baby Web</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>Bonjour,
+Votre colis vous a été présenté en votre absence. Il est à votre disposition au bureau de poste situé 141 cours Berthelot. Pensez à vous munir de votre avis de passage et d'une pièce d'identité.
+Bien cordialement,
+Baby Web</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="conclu">Le SMS est lu rapidement, sur le téléphone que le client a toujours avec lui ; il est court, peu coûteux et peut être envoyé automatiquement par le logiciel de suivi.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 14 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 14</span>
+    <span class="badge badge-3">⬆⬆⬆ niveau examen</span>
+    <span class="exo-titre-txt">Analyser un échange par tchat</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Consigne de Baby Web pour le tchat : <em>demander d'abord le numéro de commande ou le numéro de client, puis identifier la demande</em>. Voici l'échange entre un stagiaire et le client Maxime Delorme :
+      <table class="tableau-donnees">
+        <tr><th>Ligne</th><th>Auteur</th><th>Message</th></tr>
+        <tr><td>1</td><td>Client</td><td>Bonjour, je voudrais des infos sur ma commande.</td></tr>
+        <tr><td>2</td><td>Stagiaire</td><td>salut ! c'est à quel nom ?</td></tr>
+        <tr><td>3</td><td>Client</td><td>Delorme.</td></tr>
+        <tr><td>4</td><td>Stagiaire</td><td>ok. et le prénom ?</td></tr>
+        <tr><td>5</td><td>Client</td><td>Pourquoi mon prénom ?</td></tr>
+        <tr><td>6</td><td>Stagiaire</td><td>ben j'ai plein de Delorme, je sais pas lequel c'est vous.</td></tr>
+        <tr><td>7</td><td>Client</td><td>Maxime.</td></tr>
+        <tr><td>8</td><td>Stagiaire</td><td>alors j'ai une commande pour Maxime Delorme passée le 10/12 sur le site avec un lit et une armoire, livraison au point relais de votre ville, expédiée hier par notre transporteur, vous voulez quoi exactement ?</td></tr>
+        <tr><td>9</td><td>Client</td><td>Je voudrais savoir si je serai prévenu quand elle arrivera.</td></tr>
+        <tr><td>10</td><td>Stagiaire</td><td>ouais normalement.</td></tr>
+        <tr><td>11</td><td>Client</td><td>D'accord…</td></tr>
+      </table>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Relevez les points forts de cet échange.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Relevez les points faibles de cet échange.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Indiquez ce qu'aurait dû faire le stagiaire.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Reformulez de façon professionnelle les lignes 6, 8 et 10.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> comparez l'échange à la consigne de l'entreprise, puis observez le registre de langage et la prise de congé.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <p>Informations exactes sur la commande, réponses rapides.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p>Langage familier et peu professionnel ; consigne non respectée (numéro de commande non demandé), d'où une ambiguïté sur le nom du client ; message de la ligne 8 trop long alors que la demande est simple ; identification tardive de la demande ; réponse imprécise à la ligne 10 ; pas de prise de congé.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p>Demander le numéro de commande ou de client, adopter un langage professionnel, identifier la demande dès le début, préciser que le client sera prévenu par SMS, saluer le client en lui souhaitant une bonne journée.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <code>Ligne 6 : Je vous demande votre prénom car j'ai plusieurs commandes au nom de Delorme.
+Ligne 8 : J'ai votre commande à l'écran : un lit et une armoire. Est-ce bien cela ? Que puis-je faire pour vous ?
+Ligne 10 : Oui, bien sûr, vous serez prévenu par SMS dès l'arrivée de votre commande au point relais, comme vous l'avez souhaité.</code>
+        <p class="conclu">Il faut ajouter une prise de congé : « Je vous souhaite une bonne journée, Monsieur Delorme. »</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 15 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 15</span>
+    <span class="badge badge-3">⬆⬆⬆ niveau examen</span>
+    <span class="exo-titre-txt">Retard de livraison : les droits du client</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      M. Hugo Petit a commandé une armoire chez un vendeur en ligne le <strong>2 mars</strong>. La confirmation de commande indique une livraison <strong>au plus tard le 20 mars</strong>. Le 28 mars, il n'a toujours rien reçu et vous contacte, en tant que conseiller du service client d'un autre site, pour savoir ce qu'il peut faire.<br><br>
+      Rappel : en cas de retard, le client peut mettre le vendeur en demeure de livrer dans un <strong>délai supplémentaire raisonnable</strong> (par exemple 15 jours), par lettre recommandée avec accusé de réception ou lettre recommandée électronique. Si la livraison n'a toujours pas lieu, il peut <strong>annuler (résoudre) le contrat</strong> ; le vendeur doit alors le rembourser au plus tard dans les <strong>14 jours</strong>.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Quelle est la première démarche à effectuer par M. Petit ? Est-il en droit de réclamer ?</p></div>
+      <div class="question"><span class="q-num">2</span><p>Quel document doit-il envoyer au vendeur et que doit contenir ce document ?</p></div>
+      <div class="question"><span class="q-num">3</span><p>Que peut faire M. Petit si le vendeur ne livre pas dans le délai supplémentaire accordé ?</p></div>
+      <div class="question"><span class="q-num">4</span><p>Si aucune date de livraison n'avait été indiquée, quel aurait été le délai maximal de livraison ?</p></div>
+      <div class="question"><span class="q-num">5</span><p>Côté vendeur, proposez trois actions pour éviter ce type de situation.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> la procédure suit trois étapes : vérifier la date promise, mettre en demeure par écrit, puis annuler le contrat.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <p>Vérifier si une date de livraison a été prévue (bon de commande, mail de confirmation).</p>
+        <p class="res">Oui : la date du 20 mars est dépassée de 8 jours.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p>Une lettre recommandée avec accusé de réception (ou recommandée électronique) de mise en demeure, rappelant le numéro et la date de commande, la date de livraison promise et demandant la livraison dans un délai supplémentaire précis (ex. 15 jours).</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">Il peut annuler le contrat par écrit.</p>
+        <p class="conclu">Le vendeur doit alors lui rembourser toutes les sommes versées au plus tard 14 jours après l'annulation.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="res">30 jours après la conclusion du contrat.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">5</span>
+        <p class="conclu">Suivre régulièrement les commandes et les livraisons des fournisseurs, prévenir le client dès qu'un retard est connu en lui donnant une nouvelle date, proposer une solution (autre produit, livraison partielle, geste commercial), annoncer des délais réalistes.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 4 – CAS DE SYNTHÈSE
+══════════════════════════════════════════════════════════ -->
+<hr class="section-sep">
+<div class="bloc-titre" id="synthese">
+  <span class="icone">🏁</span>
+  <h2>Bloc 4 – Cas de synthèse</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo</div>
+  <code>Suivre la commande → suivre le règlement → informer des délais → informer de la mise à disposition</code>
+  <p class="note">Dans un cas complet, on vérifie d'abord les données (produits, quantités, montants), puis on calcule (total, échéances, dates) et on termine par la communication écrite au client.</p>
+</div>
+
+<!-- EX 16 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 16</span>
+    <span class="badge badge-exam">🏁 cas de synthèse</span>
+    <span class="exo-titre-txt">Suivre une commande click &amp; collect</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Vous êtes en PFMP dans un magasin de l'enseigne de prêt-à-porter <strong>Beauty's</strong>, qui propose le <em>click &amp; collect</em> : le client commande sur le site et retire ses articles en magasin. Le slogan de l'enseigne est « <em>Beauty'sez-vous !</em> ».<br><br>
+      À <strong>10 h 30</strong>, Mme <strong>Emma Patisson</strong> commande sur le site :<br>
+      • 1 pantalon Femny, taille M, affiché disponible ;<br>
+      • 1 pantalon Homny noir, taille 2XL, affiché disponible.<br><br>
+      À <strong>10 h 35</strong>, vous vérifiez en réserve et en rayon : le pantalon Femny est bien présent, mais le pantalon Homny noir 2XL est introuvable. Le réapprovisionnement par l'entrepôt prend <strong>48 heures</strong>. Les commandes sont prêtes en <strong>1 heure</strong> quand l'article est en magasin.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Rédigez le message de confirmation à Mme Patisson : appelez-la par son prénom, signez de votre prénom et terminez par « Beauty'sez-vous ! ».</p></div>
+      <div class="question"><span class="q-num">2</span><p>Que faites-vous ensuite pour chacun des deux articles ?</p></div>
+      <div class="question"><span class="q-num">3</span><p>Pourquoi un produit affiché disponible sur le site à 10 h 30 peut-il être indisponible en magasin à 10 h 35 ?</p></div>
+      <div class="question"><span class="q-num">4</span><p>Présentez les avantages du click &amp; collect pour l'entreprise.</p></div>
+      <div class="question"><span class="q-num">5</span><p>Précisez l'organisation à mettre en place en magasin pour ce service.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Repère :</strong> un article est prêt dans 1 heure (vers 11 h 30), l'autre dans 48 heures : le message doit donner les deux informations.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Chère Emma,
+Merci pour votre commande sur notre site Beauty's. Le pantalon Femny, taille M, sera disponible dès 11 h 30 dans votre magasin. Le pantalon Homny noir, taille 2XL, est victime de son succès : il sera à votre disposition dans les 48 heures.
+[prénom] / Beauty'sez-vous !</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p><strong>Pantalon Femny :</strong> je prends l'article en rayon et je le dépose au service client.<br><strong>Pantalon Homny :</strong> je passe commande de l'article auprès de l'entrepôt sur le site dédié.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p>Erreur d'inventaire, démarque inconnue (vol, casse), produit mal rangé ou laissé hors du rayon par un client, article acheté entre-temps en magasin, site non mis à jour.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p>Gain de temps, ventes additionnelles (le client achète d'autres produits en venant), réduction des coûts et hausse de la marge (pas de frais de transport ni d'emballage), suppression des frais de livraison qui freinent l'achat, trafic en magasin.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">5</span>
+        <p class="conclu">Réserver un emplacement spécifique pour ne pas faire attendre le client, communiquer sur le service (site, magasin, réseaux sociaux), définir des plages horaires de retrait, mettre à jour les stocks en temps réel.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 17 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 17</span>
+    <span class="badge badge-exam">🏁 cas de synthèse</span>
+    <span class="exo-titre-txt">Commande d'un client professionnel : du bon de commande au retard</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      La micro-crèche <strong>Les Petits Pas</strong> (client professionnel) passe chez Baby Web, le <strong>lundi 3 mars à 9 h</strong>, la commande n° <strong>7901</strong> :
+      <table class="tableau-donnees">
+        <tr><th>Désignation</th><th>Réf.</th><th>Prix unitaire €</th><th>Quantité</th></tr>
+        <tr><td>Lit Cévennes</td><td>45120</td><td class="num">289,00</td><td>4</td></tr>
+        <tr><td>Commode Loire</td><td>33017</td><td class="num">149,90</td><td>2</td></tr>
+        <tr><td>Étagère murale Jura</td><td>12455</td><td class="num">18,50</td><td>6</td></tr>
+      </table>
+      Conditions de Baby Web pour les professionnels :<br>
+      • frais de livraison de <strong>49 €</strong>, offerts à partir de <strong>1 500 €</strong> de commande ;<br>
+      • paiement en <strong>3 fois sans frais</strong> par prélèvement possible ;<br>
+      • livraison en <strong>8 jours ouvrés</strong>, le jour de la commande comptant comme 1<sup>er</sup> jour (aucun jour férié en mars).<br><br>
+      Le jeudi 6 mars, le fournisseur des commodes annonce <strong>une semaine de retard</strong> : les commodes ne pourront être livrées que le mercredi 19 mars. Les lits et les étagères sont disponibles.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Calculez la valeur de chaque ligne et le total de la commande.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Les frais de livraison sont-ils facturés ? Justifiez.</p></div>
+      <div class="question"><span class="q-num">3</span><p>La crèche choisit le paiement en 3 fois sans frais. Établissez le montant de chaque échéance.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Déterminez la date de livraison initialement annoncée.</p></div>
+      <div class="question"><span class="q-num">5</span><p>Rédigez le mail informant la directrice de la crèche du retard des commodes et lui proposant deux solutions de livraison.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 4 lits à près de 300 € font environ 1 150 € ; le total dépasse donc 1 500 €. Chaque échéance est voisine de 520 €.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <table class="tableau-corr">
+          <tr><th>Désignation</th><th>Calcul</th><th>Valeur €</th></tr>
+          <tr><td>Lit Cévennes</td><td>289,00 × 4</td><td class="val">1 156,00</td></tr>
+          <tr><td>Commode Loire</td><td>149,90 × 2</td><td class="val">299,80</td></tr>
+          <tr><td>Étagère murale Jura</td><td>18,50 × 6</td><td class="val">111,00</td></tr>
+          <tr class="t-total"><td colspan="2">Total commande</td><td>1 566,80</td></tr>
+        </table>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Non : 1 566,80 € ≥ 1 500 €, la livraison est offerte.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>1 566,80 ÷ 3 = 522,266… → 522,27 € arrondi
+522,26 × 3 = 1 566,78 € → il manque 0,02 €</code>
+        <p class="res">1<sup>re</sup> échéance : 522,28 € – 2<sup>e</sup> : 522,26 € – 3<sup>e</sup> : 522,26 € (total 1 566,80 €).</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <code>lun. 3 (1) – mar. 4 (2) – mer. 5 (3) – jeu. 6 (4) – ven. 7 (5) – lun. 10 (6) – mar. 11 (7) – mer. 12 (8)</code>
+        <p class="res">Livraison annoncée le mercredi 12 mars.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">5</span>
+        <code>Objet : commande n° 7901 – retard de livraison des commodes
+
+Madame la directrice,
+Nous vous remercions pour votre commande n° 7901 du 3 mars. Notre fournisseur nous informe d'un retard sur les deux commodes Loire, qui ne pourront être livrées que le mercredi 19 mars. Les lits et les étagères sont disponibles.
+Nous vous proposons :
+– soit une livraison en deux fois : lits et étagères le mercredi 12 mars, commodes le mercredi 19 mars, sans frais supplémentaires ;
+– soit une livraison groupée de l'ensemble le mercredi 19 mars.
+Merci de nous indiquer la solution qui vous convient. Nous vous prions de nous excuser pour ce désagrément.
+Cordialement,
+[prénom nom], Baby Web</code>
+        <p class="conclu">Prévenir dès que le retard est connu et proposer un choix préserve la confiance d'un client professionnel qui commande régulièrement.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+</main>
+
+<footer class="site-footer">
+  Bac Pro MCV – Bloc 2 « Suivre les ventes » (E32) &nbsp;|&nbsp; 17 exercices progressifs – Assurer le suivi de la commande du produit et/ou du service
+</footer>
+
+<script>
+function toggleCorr(btn) {
+  const corr = btn.nextElementSibling;
+  const isVisible = corr.classList.contains('visible');
+  corr.classList.toggle('visible', !isVisible);
+  btn.textContent = isVisible ? '✅ Voir la correction' : '🔒 Masquer la correction';
+}
+</script>
+
+</body>
+</html>
